@@ -1,0 +1,156 @@
+.admin-dashboard {
+  padding: 2rem;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h2 {
+  color: #2c3e50;
+  margin: 0;
+}
+
+.dashboard-content {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.users-management,
+.system-stats {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.users-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.role-filter,
+.status-filter {
+  padding: 0.5rem;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  min-width: 150px;
+}
+
+.user-card {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background: #f8f9fa;
+}
+
+.user-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+}
+
+.user-info p {
+  margin: 0.25rem 0;
+  color: #34495e;
+}
+
+.role {
+  font-weight: 500;
+  color: #4285f4;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.status.active {
+  background-color: #34a853;
+  color: white;
+}
+
+.status.pending {
+  background-color: #f1c40f;
+  color: #000000;
+}
+
+.status.suspended {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.user-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.approve-button,
+.reject-button,
+.suspend-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.approve-button {
+  background-color: #34a853;
+  color: white;
+}
+
+.approve-button:hover {
+  background-color: #2d8a46;
+}
+
+.reject-button,
+.suspend-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.reject-button:hover,
+.suspend-button:hover {
+  background-color: #c0392b;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.stat-card h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 0.875rem;
+}
+
+.stat-card p {
+  margin: 0;
+  color: #4285f4;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
