@@ -1,27 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Login from './components/Login';
 import PatientDashboard from './components/PatientDashboard';
 import DoctorDashboard from './components/DoctorDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import PharmacistDashboard from './components/PharmacistDashboard';
 import './App.css';
+import { useAppContext } from './context/AppContext';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userType, setUserType] = useState(null);
-
-  const handleLogin = (type) => {
-    setIsLoggedIn(true);
-    setUserType(type);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserType(null);
-  };
+  const { currentUser, logout } = useAppContext();
 
   const renderDashboard = () => {
-    switch (userType) {
+    if (!currentUser) return null;
+    const role = currentUser.role || currentUser.userType || 'patient';
+    switch (role) {
       case 'patient':
         return <PatientDashboard />;
       case 'doctor':
@@ -37,15 +29,18 @@ function App() {
 
   return (
     <div className="app">
-      {!isLoggedIn ? (
-        <Login onLogin={handleLogin} />
+      {!currentUser ? (
+        <Login />
       ) : (
         <div className="dashboard-container">
           <nav className="navbar">
             <h1 className="app-title">MedConnect</h1>
-            <button className="logout-button" onClick={handleLogout}>
-              Logout
-            </button>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <span style={{ color: '#2c3e50' }}>{currentUser.name}</span>
+              <button className="logout-button" onClick={logout}>
+                Logout
+              </button>
+            </div>
           </nav>
           {renderDashboard()}
         </div>

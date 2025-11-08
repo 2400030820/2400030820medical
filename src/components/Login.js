@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import '../styles/Login.css';
+import { useAppContext } from '../context/AppContext';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
+  const { login, doctors } = useAppContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('patient');
+  const [name, setName] = useState('');
+  const [selectedDoctorId, setSelectedDoctorId] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // In a real application, implement proper authentication here
-    onLogin(userType);
+    const user = { role: userType, name: name || (email ? email.split('@')[0] : 'User'), email, registered: true, doctorId: selectedDoctorId };
+    // if a doctor was selected from list, prefer that identity
+    if (userType === 'doctor' && selectedDoctorId) {
+      const doc = doctors.find(d => String(d.id) === String(selectedDoctorId));
+      if (doc) {
+        login(doc);
+        return;
+      }
+    }
+    login(user);
   };
 
   return (
@@ -29,6 +41,28 @@ const Login = ({ onLogin }) => {
               <option value="admin">Admin</option>
               <option value="pharmacist">Pharmacist</option>
             </select>
+          </div>
+
+          {userType === 'doctor' && (
+            <div className="form-group">
+              <label>Select Doctor Account</label>
+              <select className="form-control" value={selectedDoctorId} onChange={e => setSelectedDoctorId(e.target.value)}>
+                <option value="">-- choose doctor --</option>
+                {doctors.map(doc => (
+                  <option key={doc.id} value={doc.id}>{doc.name} ({doc.email})</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="form-group">
+            <label>Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="form-control"
+            />
           </div>
           <div className="form-group">
             <label>Email</label>

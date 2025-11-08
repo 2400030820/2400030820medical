@@ -1,36 +1,25 @@
 import React, { useState } from 'react';
 import '../styles/DoctorDashboard.css';
+import { useAppContext } from '../context/AppContext';
 
 const DoctorDashboard = () => {
-  const [consultations, setConsultations] = useState([
-    {
-      id: 1,
-      patientName: 'John Doe',
-      date: '2025-11-07',
-      time: '10:00 AM',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      patientName: 'Jane Smith',
-      date: '2025-11-07',
-      time: '11:30 AM',
-      status: 'Completed',
-    },
-  ]);
-
+  const { appointments, currentUser, setAppointmentStatus, registerPatient } = useAppContext();
   const [selectedConsultation, setSelectedConsultation] = useState(null);
+
+  const myAppointments = appointments.filter(a => currentUser && a.doctorId && a.doctorId === currentUser.id);
 
   const handleConsultationClick = (consultation) => {
     setSelectedConsultation(consultation);
   };
 
   const updateConsultationStatus = (id, newStatus) => {
-    setConsultations(consultations.map(consultation =>
-      consultation.id === id
-        ? { ...consultation, status: newStatus }
-        : consultation
-    ));
+    setAppointmentStatus(id, newStatus);
+    setSelectedConsultation(null);
+  };
+
+  const handleRegisterPatient = (email, name) => {
+    const user = registerPatient({ name, email });
+    // optionally do something with returned user
     setSelectedConsultation(null);
   };
 
@@ -42,16 +31,20 @@ const DoctorDashboard = () => {
 
       <div className="dashboard-content">
         <div className="consultations-list">
-          <h3>Today's Consultations</h3>
-          {consultations.map((consultation) => (
+          <h3>Upcoming Appointments</h3>
+          {myAppointments.length === 0 && <p>No upcoming appointments.</p>}
+          {myAppointments.map((consultation) => (
             <div
               key={consultation.id}
               className={`consultation-card ${consultation.status.toLowerCase()}`}
               onClick={() => handleConsultationClick(consultation)}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
             >
-              <div className="consultation-info">
-                <h4>{consultation.patientName}</h4>
-                <p>Time: {consultation.time}</p>
+              <div>
+                <strong style={{ display: 'block' }}>{consultation.patientName}</strong>
+                <small style={{ color: '#666' }}>{consultation.date}</small>
+              </div>
+              <div>
                 <span className={`status ${consultation.status.toLowerCase()}`}>
                   {consultation.status}
                 </span>
@@ -65,8 +58,8 @@ const DoctorDashboard = () => {
             <h3>Consultation Details</h3>
             <div className="details-card">
               <h4>{selectedConsultation.patientName}</h4>
+              <p>Email: {selectedConsultation.patientEmail}</p>
               <p>Date: {selectedConsultation.date}</p>
-              <p>Time: {selectedConsultation.time}</p>
               <div className="action-buttons">
                 {selectedConsultation.status === 'Pending' && (
                   <>
@@ -82,6 +75,14 @@ const DoctorDashboard = () => {
                     >
                       Cancel
                     </button>
+                    {!selectedConsultation.patientRegistered && (
+                      <button
+                        className="approve-consultation"
+                        onClick={() => handleRegisterPatient(selectedConsultation.patientEmail, selectedConsultation.patientName)}
+                      >
+                        Register Patient
+                      </button>
+                    )}
                   </>
                 )}
                 {selectedConsultation.status === 'In Progress' && (
